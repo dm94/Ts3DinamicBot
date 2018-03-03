@@ -1,5 +1,7 @@
 # Ts3DinamicBot
 
+Esta publicado tal cual como se usaba de manera privada, poco a poco ire actualizandolo para que sea mas facil su configuracion
+
 [![GitHub release](https://img.shields.io/github/release/dm94/Ts3DinamicBot.svg)](https://github.com/dm94/Ts3DinamicBot/releases)
 [![Github All Releases](https://img.shields.io/github/downloads/dm94/Ts3DinamicBot/total.svg)](https://github.com/dm94/Ts3DinamicBot/releases)
 [![Twitter Follow](https://img.shields.io/twitter/follow/dm94dani.svg?style=social&label=Follow&maxAge=1)](https://twitter.com/dm94dani)
