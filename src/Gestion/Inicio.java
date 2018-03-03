@@ -100,7 +100,7 @@ public class Inicio {
 	     
 		 banners=mda.getBanners();
 	     listadoCanales=mda.getListadoCanales();
-	     listadoCanales.add(new Canales(5216,5,"Grupo","Solo pueden entrar personas que hayan verificado twitter o la web. En este canal esta permitido el bloqueo del mismo, habla por privado a [URL=client://35/OmRFT7kp09SHczLBFtpQYjNfnGA=~TS3DinamicBot]TS3DinamicBot[/URL] y pon !lock lacontraseñaquequieras para que ponga contrasenia al canal",false,20,10,0));
+	     //listadoCanales.add(new Canales(5216,5,"Grupo","Solo pueden entrar personas que hayan verificado twitter o la web. En este canal esta permitido el bloqueo del mismo, habla por privado a [URL=client://35/OmRFT7kp09SHczLBFtpQYjNfnGA=~TS3DinamicBot]TS3DinamicBot[/URL] y pon !lock lacontraseñaquequieras para que ponga contrasenia al canal",false,20,10,0));
 	     listadoBusqueda=mda.getListadoBusqueda();
 	     listadoCanalesEspeciales=mda.getListadoCanalesPermisos();
 	     listadoRespuestas=mda.getListadoRespuestas();
@@ -108,8 +108,7 @@ public class Inicio {
 	     listadoCanalNumUsu=mda.getTotalUsu();
 	     listadoRangos=mda.getListadoRangos();
 	     idioma=new Idioma(mda.getIdioma());
-	     //gbd=new Conexion();
-	     
+	     gbd=new Conexion();
 	     
 	     //--------------------------------------------------------------------------------------
 	     
