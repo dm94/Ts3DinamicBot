@@ -1,0 +1,14 @@
+canalentrada:1078
+direccion:localhost
+puerto:9987
+usuario:tuuser
+contra:tupass
+nombrebot:TS3DinamicBot
+canalatendido:896
+admin:WBO8y9P3AWu+ociKtAqFg1wafF0=
+idioma:Spanish
+detectorTrolls:true
+detectorvpn:true
+canalprincipal:901
+grupotroll:407
+autorank:false

@@ -1,0 +1,7 @@
+3#crear,canal,sala,privada,permanente#Para crear un canal gratis puedes hacerlo desde aqui [url=https://gzone.es/servidores/panelts3/]Panel de Teamspeak[/url]
+3#cambiar,bandera,ponerme,poner#Para ponerte la bandera puedes hacerlo desde aqui [URL]https://gzone.es/producto/tu-bandera-en-team-speak-3/[/URL]
+3#cual,conseguir,unique,id,unica#Escribeme con el comando !uniqueid para saber tu ID Unica
+3#vericar,verificacion,twitter,verificado#Escribeme el comando !veri y sigue las instrucciones
+3#unirme,streamer,streaming,hacer#Si quieres unirte como streamer para nuestra comunidad aquí tienes todo lo necesario [URL]https://gzone.es/foro/solicitudes-de-ingreso/solicitud-ingreo-streamer/[/URL]
+4#910#CSGOC,925,5,CS:GO Competitiva 5vs5#CSGOF,925,5,CS:GO Faceit 5vs5#RL3,948,3,Rocket League 3vs3#RL2,948,2,Rocket League 2vs2#LOLR,930,5,League of Legends Ranked 5vs5#LOLA,930,5,League of Legends Aram 5vs5#LOL5,930,5,League of Legends Normal 5vs5#LOL3,930,5, League of Legends Normal 3vs3#Ark2,943,2, Ark Soft 2vs2#Ark4,943,4,Ark Soft 4vs4#Ark6,943,6,Ark Soft 6vs6#Dota,445,5, Dota 2 5vs5#HS,948,2,Hearthstone Duelo#HOTS,948,5,Heroes of the Storm 5vs5
+5#899#[cspacer54]USUARIOS ONLINE :
