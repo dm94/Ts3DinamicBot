@@ -81,9 +81,9 @@ public class Inicio {
 	private ArrayList<Banner> banners=new ArrayList<Banner>();
 	private TS3Query query;
 	private Idioma idioma;
-	private Conexion gbd;
-	@SuppressWarnings("unused")
-	private GestionBD gbdl;
+	private Conexion gbdExterna;
+	private GestionBD gbdInterna;
+	private boolean bdExterna=false;
 	private ArrayList<sacarAccesoTwitter> usuariosVerificandose=new ArrayList<sacarAccesoTwitter>();
 	private int bannerActual=0;
 	
@@ -94,8 +94,18 @@ public class Inicio {
 	}
 	
 	public void encender(){
-
-
+		if(mda.getTipoBD().equalsIgnoreCase("mysql")) {
+			bdExterna=true;
+		}else {
+			bdExterna=false;
+		}
+		
+		if(bdExterna) {
+			gbdExterna=new Conexion();
+		}else {
+			gbdInterna=new GestionBD();
+		}
+		
 		//--------------------------------------------------------------------------------------
 	     
 		 banners=mda.getBanners();
@@ -108,7 +118,6 @@ public class Inicio {
 	     listadoCanalNumUsu=mda.getTotalUsu();
 	     listadoRangos=mda.getListadoRangos();
 	     idioma=new Idioma(mda.getIdioma());
-	     gbd=new Conexion();
 	     
 	     //--------------------------------------------------------------------------------------
 	     
@@ -225,17 +234,32 @@ public class Inicio {
 						String ip=api.getClientInfo(arg0.getClientId()).getIp();
 						int dbId=arg0.getClientDatabaseId();
 					
-						if(gbd.estaIP(ip) && mda.isDetectorTrolls()){
-							String idprini=gbd.sacarPrimeraID(ip);
-							
-							if(!(gbd.estaTroll(uniqueid))){
-								aniadirDescripcion(dbId,"Troll - DetectorTrolls - 1 ID "+idprini);
-								aniadirTroll(dbId);
-								gbd.aniadirTroll(ip, uniqueid);
-								api.sendChannelMessage("Troll | Usuario: "+String.format("[URL=client://%s/%s~%s]%s[/URL]",String.valueOf(arg0.getClientId()),uniqueid,arg0.getClientNickname(),arg0.getClientNickname())+" | ID Unica: "+uniqueid);
-								mandarMensaje(mda.getAdminBot(),"Troll | Usuario: "+String.format("[URL=client://%s/%s~%s]%s[/URL]",String.valueOf(arg0.getClientId()),uniqueid,arg0.getClientNickname(),arg0.getClientNickname())+" | ID Unica: "+uniqueid);
+						if(bdExterna) {
+							if(gbdExterna.estaIP(ip) && mda.isDetectorTrolls()){
+								String idprini=gbdExterna.sacarPrimeraID(ip);
+								
+								if(!(gbdExterna.estaTroll(uniqueid))){
+									aniadirDescripcion(dbId,"Troll - DetectorTrolls - 1 ID "+idprini);
+									aniadirTroll(dbId);
+									gbdExterna.aniadirTroll(ip, uniqueid);
+									api.sendChannelMessage("Troll | Usuario: "+String.format("[URL=client://%s/%s~%s]%s[/URL]",String.valueOf(arg0.getClientId()),uniqueid,arg0.getClientNickname(),arg0.getClientNickname())+" | ID Unica: "+uniqueid);
+									mandarMensaje(mda.getAdminBot(),"Troll | Usuario: "+String.format("[URL=client://%s/%s~%s]%s[/URL]",String.valueOf(arg0.getClientId()),uniqueid,arg0.getClientNickname(),arg0.getClientNickname())+" | ID Unica: "+uniqueid);
+								}
+							}
+						}else {
+							if(gbdInterna.estaIP(ip) && mda.isDetectorTrolls()){
+								String idprini=gbdInterna.sacarPrimeraID(ip);
+								
+								if(!(gbdInterna.estaTroll(uniqueid))){
+									aniadirDescripcion(dbId,"Troll - DetectorTrolls - 1 ID "+idprini);
+									aniadirTroll(dbId);
+									gbdInterna.aniadirTroll(ip, uniqueid);
+									api.sendChannelMessage("Troll | Usuario: "+String.format("[URL=client://%s/%s~%s]%s[/URL]",String.valueOf(arg0.getClientId()),uniqueid,arg0.getClientNickname(),arg0.getClientNickname())+" | ID Unica: "+uniqueid);
+									mandarMensaje(mda.getAdminBot(),"Troll | Usuario: "+String.format("[URL=client://%s/%s~%s]%s[/URL]",String.valueOf(arg0.getClientId()),uniqueid,arg0.getClientNickname(),arg0.getClientNickname())+" | ID Unica: "+uniqueid);
+								}
 							}
 						}
+						
 					}
 				}
 			}
@@ -427,7 +451,13 @@ public class Inicio {
 							quitarTrolls(e.getMessage());
 						}
 					}else if(e.getMessage().equalsIgnoreCase("!rank")){
-						int puntos=gbd.getPuntosUsuario(e.getInvokerUniqueId());
+						int puntos=0;
+						if(bdExterna) {
+							puntos=gbdExterna.getPuntosUsuario(e.getInvokerUniqueId());
+						}else {
+							puntos=gbdInterna.getPuntosUsuario(e.getInvokerUniqueId());
+						}
+						
 						int puntosFaltantes=0;
 						
 						Rango rank=sacarProxRango(puntos);
@@ -1098,7 +1128,12 @@ public class Inicio {
 			usuarios.add(clientes.get(i).getUniqueIdentifier());
 		}
 		
-		new aniadirPuntos(usuarios,gbd).start();
+		if(bdExterna) {
+			new aniadirPuntos(usuarios,gbdExterna).start();
+		}else {
+			new aniadirPuntos(usuarios,gbdInterna).start();
+		}
+		
 	}
 	
 	private void asignarRangos(){
@@ -1106,7 +1141,14 @@ public class Inicio {
 		
 		List<Client> clientes=api.getClients();
 		for(int i=0;i<clientes.size();i++){
-			int puntos=gbd.getPuntosUsuario(clientes.get(i).getUniqueIdentifier());
+			int puntos=0;
+
+			if(bdExterna) {
+				puntos=gbdExterna.getPuntosUsuario(clientes.get(i).getUniqueIdentifier());
+			}else {
+				puntos=gbdInterna.getPuntosUsuario(clientes.get(i).getUniqueIdentifier());
+			}
+					
 			int idGrupo=sacarRangoAdecuado(puntos);
 			
 			if(idGrupo>0){
@@ -1187,11 +1229,20 @@ public class Inicio {
 			try{
 				List<ServerGroupClient> groupServer=api.getServerGroupClients(mda.getGrupoTroll());
 			     for(int i=0;i<groupServer.size();i++){
-			    	 if(!gbd.estaTroll(groupServer.get(i).getUniqueIdentifier())){
-			    		 String ip="";
-			    		 ip=api.getDatabaseClientByUId(groupServer.get(i).getUniqueIdentifier()).getLastIp();
-			    		 
-			    		 gbd.aniadirTroll(ip, groupServer.get(i).getUniqueIdentifier());
+			    	 if(bdExterna) {
+			    		 if(!gbdExterna.estaTroll(groupServer.get(i).getUniqueIdentifier())){
+				    		 String ip="";
+				    		 ip=api.getDatabaseClientByUId(groupServer.get(i).getUniqueIdentifier()).getLastIp();
+				    		 
+				    		 gbdExterna.aniadirTroll(ip, groupServer.get(i).getUniqueIdentifier());
+				    	 }
+			    	 }else {
+			    		 if(!gbdInterna.estaTroll(groupServer.get(i).getUniqueIdentifier())){
+				    		 String ip="";
+				    		 ip=api.getDatabaseClientByUId(groupServer.get(i).getUniqueIdentifier()).getLastIp();
+				    		 
+				    		 gbdInterna.aniadirTroll(ip, groupServer.get(i).getUniqueIdentifier());
+				    	 }
 			    	 }
 			     }
 			}catch(Exception e){
@@ -1214,13 +1265,25 @@ public class Inicio {
 	
 	private void detectarTrolls(){
 		for(int i=0;i<listaClientes.size();i++){
-			if(gbd.estaIP(listaClientes.get(i).getLastIp())){
-				if(!(gbd.estaTroll(listaClientes.get(i).getUniqueIdentifier()))){
-					int dbId=0;
-					dbId=listaClientes.get(i).getDatabaseId();
-					aniadirDescripcion(dbId,"Troll - DetectorTrolls - 1 ID: "+gbd.sacarPrimeraID(listaClientes.get(i).getLastIp()));
-					aniadirTroll(dbId);
-					gbd.aniadirTroll(listaClientes.get(i).getLastIp(), listaClientes.get(i).getUniqueIdentifier());
+			if(bdExterna) {
+				if(gbdExterna.estaIP(listaClientes.get(i).getLastIp())){
+					if(!(gbdExterna.estaTroll(listaClientes.get(i).getUniqueIdentifier()))){
+						int dbId=0;
+						dbId=listaClientes.get(i).getDatabaseId();
+						aniadirDescripcion(dbId,"Troll - DetectorTrolls - 1 ID: "+gbdExterna.sacarPrimeraID(listaClientes.get(i).getLastIp()));
+						aniadirTroll(dbId);
+						gbdExterna.aniadirTroll(listaClientes.get(i).getLastIp(), listaClientes.get(i).getUniqueIdentifier());
+					}
+				}
+			}else {
+				if(gbdInterna.estaIP(listaClientes.get(i).getLastIp())){
+					if(!(gbdInterna.estaTroll(listaClientes.get(i).getUniqueIdentifier()))){
+						int dbId=0;
+						dbId=listaClientes.get(i).getDatabaseId();
+						aniadirDescripcion(dbId,"Troll - DetectorTrolls - 1 ID: "+gbdInterna.sacarPrimeraID(listaClientes.get(i).getLastIp()));
+						aniadirTroll(dbId);
+						gbdInterna.aniadirTroll(listaClientes.get(i).getLastIp(), listaClientes.get(i).getUniqueIdentifier());
+					}
 				}
 			}
 		}
@@ -1228,7 +1291,15 @@ public class Inicio {
 	
 	private void quitarTrolls(String mensaje){
 		String uniqueid=util.sacarUniqueId(mensaje);
-		ArrayList<String> trolls=gbd.sacarTodosLosTrollsIp(uniqueid);
+		
+		ArrayList<String> trolls=null;
+		
+		if(bdExterna) {
+			trolls=gbdExterna.sacarTodosLosTrollsIp(uniqueid);
+		}else {
+			trolls=gbdInterna.sacarTodosLosTrollsIp(uniqueid);
+		}
+		
 		int dbId=0;
 		
 		for(int i=0;i<trolls.size();i++){
@@ -1236,7 +1307,11 @@ public class Inicio {
 				if(trolls.get(i).length()>0 && trolls.get(i)!=null){
 					mandarMensaje(mda.getAdminBot(),"Eliminando troll a la Unique Id: "+trolls.get(i));
 					dbId=0;
-					gbd.eliminarTrollUniqueId(trolls.get(i));
+					if(bdExterna) {
+						gbdExterna.eliminarTrollUniqueId(trolls.get(i));
+					}else {
+						gbdInterna.eliminarTrollUniqueId(trolls.get(i));
+					}
 					dbId=api.getDatabaseClientByUId(trolls.get(i)).getDatabaseId();
 					
 					if(dbId>0){

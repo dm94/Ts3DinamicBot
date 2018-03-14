@@ -3,19 +3,30 @@ package Gestion;
 import java.util.ArrayList;
 
 public class aniadirPuntos extends Thread{
-	
+	private Conexion gbdExterna;
+	private GestionBD gbdInterna;
 	private ArrayList<String> usuarios;
-	private Conexion gbd;
 	
-	public aniadirPuntos(ArrayList<String> usuarios,Conexion gbd){
+
+	public aniadirPuntos(ArrayList<String> usuarios, Conexion gbdExterna) {
 		this.usuarios=usuarios;
-		this.gbd=gbd;
-	}
-	
-	public void run(){
-		for(int i=0;i<usuarios.size();i++){
-			gbd.aniadirPunto(usuarios.get(i));
-		}
+		this.gbdExterna=gbdExterna;
 	}
 
+	public aniadirPuntos(ArrayList<String> usuarios, GestionBD gbdInterna) {
+		this.usuarios=usuarios;
+		this.gbdInterna=gbdInterna;
+	}
+
+	public void run(){
+		if(gbdInterna!=null) {
+			for(int i=0;i<usuarios.size();i++) {
+				gbdInterna.aniadirPunto(usuarios.get(i));
+			}
+		}else {
+			for(int i=0;i<usuarios.size();i++) {
+				gbdInterna.aniadirPunto(usuarios.get(i));
+			}
+		}
+	}
 }

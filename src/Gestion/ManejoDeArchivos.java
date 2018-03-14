@@ -52,6 +52,10 @@ public class ManejoDeArchivos {
 	private String grupoTwitch="";
 	private ArrayList<Banner> banners=new ArrayList<Banner>();
 	private String tipoBD="sqlite";
+	private String ipBD="";
+	private String usuarioBD="";
+	private String passBD="";
+	private String nombreBD="";
 	
 	public ManejoDeArchivos(){
 		try {
@@ -163,6 +167,26 @@ public class ManejoDeArchivos {
 				}else if(cad.contains("canaltwitch")){
 					inicio=cad.indexOf(":");
 					canalTwitch=Integer.parseInt(cad.substring(inicio+1).trim());
+				}else if(cad.contains("tipobd")){
+					inicio=cad.indexOf(":");
+		            String tip=cad.substring(inicio+1).trim();
+		            if(tip.equalsIgnoreCase("mysql")) {
+		            	tipoBD="mysql";
+		            }else {
+		            	tipoBD="sqlite";
+		            }
+				}else if(cad.contains("ipbd")) {
+					inicio=cad.indexOf(":");
+		            ipBD=cad.substring(inicio+1).trim();
+				}else if(cad.contains("usuariobd")) {
+					inicio=cad.indexOf(":");
+					usuarioBD=cad.substring(inicio+1).trim();
+				}else if(cad.contains("passbd")) {
+					inicio=cad.indexOf(":");
+					passBD=cad.substring(inicio+1).trim();
+				}else if(cad.contains("nombrebd")) {
+					inicio=cad.indexOf(":");
+					nombreBD=cad.substring(inicio+1).trim();
 				}
 			}catch(Exception e){
 				System.out.println("Error en el archivo config.txt en la linea "+linea);
@@ -177,6 +201,7 @@ public class ManejoDeArchivos {
 		 * Formato de los canales
 		 * 
 		 * 5#CSGO#Esta es la descripcion del csgo#true#5
+		 * IDEspaciador#MinCanales#Nombre Canal#Descripcion#limite#Int limite usuarios#int min entrar#int min poder para hablar
 		 * 
 		 */
 		String cad = null;
@@ -194,36 +219,34 @@ public class ManejoDeArchivos {
 		
 		while((cad=br.readLine())!=null){
 			try{
-				int numCanales=3;
 				int idEspaciador=0;
+				int numCanalesMinimos=2;
 				String nombreCanales="";
 				String descripcion="En este canal esta permitido el bloqueo del mismo, habla por privado a [URL=client://35/OmRFT7kp09SHczLBFtpQYjNfnGA=~TS3DinamicBot]TS3DinamicBot[/URL] y pon !lock lacontraseñaquequieras para que ponga contraseña al canal";
 				boolean limitar=false;
 				@SuppressWarnings("unused")
 				int limiteUsuarios=0;
+				int minimoParaEntrar=0;
+				int minimoParaHablar=0;
 				token=new StringTokenizer(cad,"#");
 				try{
 					while(token.hasMoreTokens()) {
 						linea++;
 						idEspaciador=Integer.parseInt(token.nextToken().trim());
-						numCanales=Integer.parseInt(token.nextToken().trim());
+						numCanalesMinimos=Integer.parseInt(token.nextToken().trim());
 						nombreCanales=token.nextToken().trim();
 						descripcion=token.nextToken().trim();
 						if(token.nextToken().contains("true")){
 							limitar=true;
-							limiteUsuarios=Integer.parseInt(token.nextToken().trim());
 						}else{
 							limitar=false;
 						}
+						limiteUsuarios=Integer.parseInt(token.nextToken().trim());
+						minimoParaEntrar=Integer.parseInt(token.nextToken().trim());
+						minimoParaHablar=Integer.parseInt(token.nextToken().trim());
 					}
 					
-					if(pro){
-						listadoCanales.add(new Canales(idEspaciador,numCanales,nombreCanales,descripcion,limitar));
-					}else{
-						if(listadoCanales.size()<1){
-							listadoCanales.add(new Canales(idEspaciador,numCanales,nombreCanales,descripcion,limitar));
-						}
-					}
+					listadoCanales.add(new Canales(idEspaciador,numCanalesMinimos,nombreCanales,descripcion,limitar,limiteUsuarios,minimoParaEntrar,minimoParaHablar));
 					
 				}catch(Exception e){
 					System.out.println(e.getMessage());
@@ -556,6 +579,46 @@ public class ManejoDeArchivos {
 
 	public boolean isAutobanner() {
 		return autobanner;
+	}
+
+	public String getfConfig() {
+		return fConfig;
+	}
+
+	public String getfCanales() {
+		return fCanales;
+	}
+
+	public String getfEspeciales() {
+		return fEspeciales;
+	}
+
+	public String getfAutoRank() {
+		return fAutoRank;
+	}
+
+	public ArrayList<CanalEspecial> getListadoCanalesEspeciales() {
+		return listadoCanalesEspeciales;
+	}
+
+	public String getTipoBD() {
+		return tipoBD;
+	}
+
+	public String getIpBD() {
+		return ipBD;
+	}
+
+	public String getUsuarioBD() {
+		return usuarioBD;
+	}
+
+	public String getPassBD() {
+		return passBD;
+	}
+
+	public String getNombreBD() {
+		return nombreBD;
 	}
 
 }
